@@ -42,7 +42,7 @@ object Player extends App {
       }
     }
 
-    if (!tryToSeed && !performCheapestGrow()) {
+    if (!performGreedyGrow() && !tryToSeed) {
       Wait().execute("Zzz...")
     }
   }
@@ -52,7 +52,7 @@ object Player extends App {
       cell.tree.map(t => if (t.size == Large && t.isMine) 1 else 0).getOrElse(0)
     }.sum
 
-    if (numberOfOwnedLargeTrees > 5 && completeLifecycle()) {
+    if (numberOfOwnedLargeTrees > 6 && completeLifecycle()) {
       return 
     }
 
@@ -76,7 +76,7 @@ object Player extends App {
       }
     }
 
-    if (!tryToSeed && !performCheapestGrow()) {
+    if (!tryToSeed && !performGreedyGrow()) {
       Wait().execute("Zzz...")
     }
   }
@@ -86,7 +86,7 @@ object Player extends App {
       cell.tree.map(t => if (t.size == Large && t.isMine) 1 else 0).getOrElse(0)
     }.sum
 
-    if ((gameState.day == 23 || numberOfOwnedLargeTrees > 3) && completeLifecycle()) {
+    if ((gameState.day == 23 || numberOfOwnedLargeTrees > 4) && completeLifecycle()) {
       return
     }
 
@@ -111,24 +111,24 @@ object Player extends App {
     }
   }
 
-  def performCheapestGrow()(implicit gameState: GameState): Boolean = {
-    val growActions = gameState.possibleMoves.flatMap {
-      case g: Grow => Some(g)
-      case _ => None
-    }
+  // def performCheapestGrow()(implicit gameState: GameState): Boolean = {
+  //   val growActions = gameState.possibleMoves.flatMap {
+  //     case g: Grow => Some(g)
+  //     case _ => None
+  //   }
 
-    if (growActions.isEmpty) {
-      return false
-    }
+  //   if (growActions.isEmpty) {
+  //     return false
+  //   }
 
-    val minCost = growActions.map(_.cost).min
+  //   val minCost = growActions.map(_.cost).min
 
-    growActions.filter(_.cost == minCost)
-      .maxBy(g => g.cell.richness)
-      .execute("Grow, grow, grow!")
+  //   growActions.filter(_.cost == minCost)
+  //     .maxBy(g => g.cell.richness)
+  //     .execute("Grow, grow, grow!")
       
-    return true
-  }
+  //   return true
+  // }
 
   def performGreedyGrow()(implicit gameState: GameState): Boolean = {
     val growActions = gameState.possibleMoves.flatMap {
